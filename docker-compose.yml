@@ -1,0 +1,49 @@
+version: '2'
+services:
+  proxy:
+    image: nginx:1.11
+    volumes:
+      - ./cfg/nginx.conf:/etc/nginx/nginx.conf
+      - ./cfg/localhost.conf:/etc/nginx/sites-enabled/localhost.conf
+    links:
+      - frontend:frontend
+      - recentes:recentes
+      - esportes:esportes
+      - empreendedorismo:empreendedorismo
+    mem_limit: 200m
+    ports:
+      - "80:80"
+  apps:
+    image: busybox:1
+    volumes:
+      - ./app/noticias-frontend/target/noticias.war:/tmp/frontend/noticias.war
+      - ./app/noticias-recentes/target/noticias.war:/tmp/recentes/noticias.war
+      - ./app/noticias-esportes/target/noticias.war:/tmp/esportes/noticias.war
+      - ./app/noticias-empreendedorismo/target/noticias.war:/tmp/empreendedorismo/noticias.war
+    entrypoint: tail -f /dev/null
+    mem_limit: 100m
+  frontend:
+    image: tomcat:8.5
+    volumes_from:
+      - apps:ro
+    command: bash -c " rm -rf /usr/local/tomcat/webapps/* && cp /tmp/frontend/noticias.war /usr/local/tomcat/webapps/ && catalina.sh run"
+    mem_limit: 256m
+  recentes:
+    image: seniocaires/wildfly-10
+    volumes_from:
+      - apps:ro
+    entrypoint: bash -c " rm -rf /opt/wildfly-10.1.0.Final/standalone/deployments/* && cp /tmp/recentes/noticias.war /opt/wildfly-10.1.0.Final/standalone/deployments/ && /opt/wildfly-10.1.0.Final/bin/standalone.sh -b 0.0.0.0"
+    mem_limit: 256m
+  esportes:
+    image: seniocaires/wildfly-10
+    volumes_from:
+      - apps:ro
+    entrypoint: bash -c " rm -rf /opt/wildfly-10.1.0.Final/standalone/deployments/* && cp /tmp/esportes/noticias.war /opt/wildfly-10.1.0.Final/standalone/deployments/ && /opt/wildfly-10.1.0.Final/bin/standalone.sh -b 0.0.0.0"
+    mem_limit: 256m
+  empreendedorismo:
+    image: seniocaires/wildfly-10
+    volumes_from:
+      - apps:ro
+    entrypoint: bash -c " rm -rf /opt/wildfly-10.1.0.Final/standalone/deployments/* && cp /tmp/empreendedorismo/noticias.war /opt/wildfly-10.1.0.Final/standalone/deployments/ && /opt/wildfly-10.1.0.Final/bin/standalone.sh -b 0.0.0.0"
+    mem_limit: 256m
+

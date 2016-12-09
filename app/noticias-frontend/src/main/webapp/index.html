@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=UTF-8">
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+<script src="/noticias/js/controller.js"></script>
+<title>Noticias</title>
+</head>
+<body>
+<div ng-app="site" ng-controller="SiteController">
+	<h3>Recentes</h3>
+	<div>{{mensagemRecentes}}</div>
+	<div ng-repeat="noticia in recentes.noticias">
+	  {{noticia.titulo}}
+	</div>
+	<div>{{recentes.server.nome}}</div>
+	<h3>Esportes</h3>
+	<div>{{mensagemEsportes}}</div>
+	<div ng-repeat="noticia in esportes.noticias">
+	  {{noticia.titulo}}
+	</div>
+	<div>{{esportes.server.nome}}</div>
+	<h3>Empreendedorismo</h3>
+	<div>{{mensagemEmpreendedorismo}}</div>
+	<div ng-repeat="noticia in empreendedorismo.noticias">
+	  {{noticia.titulo}}
+	</div>
+	<div>{{empreendedorismo.server.nome}}</div>
+</div>
+</body>
+</html>
